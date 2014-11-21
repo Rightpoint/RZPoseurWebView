@@ -27,29 +27,17 @@
 
 
 #import "UIAlertView+RZPBlockAlert.h"
-#import <objc/runtime.h>
-
-static NSString * const kRZPBlockAlertCompletionAssociatedObjectKey = @"RZPBlockAlertCompltion";
-
-@interface UIAlertView () <UIAlertViewDelegate>
-@end
+#import "RZPBlockAlertHandler.h"
 
 @implementation UIAlertView (RZPBlockAlert)
 
 - (void)rzp_showWithCompletionBlock:(RZPBlockAlertCompletion)completion
 {
-    // Associate the completion block with this alert.
-    objc_setAssociatedObject(self, (__bridge const void *)(kRZPBlockAlertCompletionAssociatedObjectKey), completion, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    [self setDelegate:self];
+    // Associate the completion block with this alert using a handler object.
+    // We cannot simply set self as the delegate because our implementation may
+    // collide with that from another UIAlertView category.
+    [RZPBlockAlertHandler handleAlertView:self completion:completion];
     [self show];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    RZPBlockAlertCompletion completion = objc_getAssociatedObject(self, (__bridge const void *)(kRZPBlockAlertCompletionAssociatedObjectKey));
-    if ( completion ) {
-        completion(alertView, buttonIndex);
-    }
 }
 
 @end
