@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 				   
 				   Features:
                    * Delegate-compatible replacement for UIWebView that's backed by WKWebView.
-				   * If WKWebView is not available, RZPoseurWebView falls back on UIWebView.
+                   * If WKWebView is not available, RZPoseurWebView falls back on UIWebView.
                    DESC
 
   s.homepage     = "https://github.com/Raizlabs/RZPoseurWebView"
