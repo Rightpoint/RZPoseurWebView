@@ -51,8 +51,7 @@ static NSString * const kRZPBlockHandlerAssociatedObjectKey = @"RZPBlockAlertHan
 
 - (instancetype)initWithCompletion:(RZPBlockAlertCompletion)completion
 {
-    if ( (self = [super init]) )
-    {
+    if ( (self = [super init]) ) {
         _completion = completion;
     }
     
