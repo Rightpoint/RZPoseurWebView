@@ -30,6 +30,7 @@
 #import "RZPoseurWebView_Private.h"
 #import <WebKit/WebKit.h>
 #import "UIAlertView+RZPBlockAlert.h"
+#import "WKProcessPool+RZExtensions.h"
 
 #define RZP_NSVALUE_WITH_SELECTOR(selector) [NSValue valueWithPointer:selector]
 
@@ -52,6 +53,7 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 @implementation RZPWKWebView
 
 @synthesize delegate = _delegate;
+@synthesize request = _request;
 
 - (id)initWebViewHostWithDelegate:(id <RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options
 {
@@ -63,13 +65,7 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
     if ( (self = [super initWithFrame:CGRectZero]) ) {
         _delegate = delegate;
         
-        // Create backing view.
-        if ( configuration ) {
-            _backingView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-        }
-        else {
-            _backingView = [[WKWebView alloc] initWithFrame:CGRectZero];
-        }
+        [self initializeBackingViewWithConfiguration:configuration];
         
         // Align WKWebview behavior with UIWebView. Here, open new windows in-place.
         _newWindowBehavior = RZPWKWebViewOpenNewWindowInCurrentFrameBehavior;
@@ -130,15 +126,73 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
     return self;
 }
 
+- (void)initializeBackingViewWithConfiguration:(WKWebViewConfiguration*)configuration
+{
+    if ( !configuration ) {
+        configuration = [[WKWebViewConfiguration alloc] init];
+    }
+    
+    NSAssert([WKProcessPool rz_sharedProcessPool] != nil, @"Shared process pool not initialized.");
+    configuration.processPool = [WKProcessPool rz_sharedProcessPool];
+    
+    [configuration.userContentController addUserScript:[self cookieInjectionScript]];
+
+    _backingView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+}
+
+- (WKUserScript *)cookieInjectionScript
+{
+    // Add cookies from shared cookie storage via javascript injection. Since we have no way of knowing what cookies are being stored
+    // in the WKProcessPool, we are not adding the cookies to the page if they already exist.
+    NSString *cookieScriptString = @"";
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        if ( cookie.name && cookie.value ) {
+            NSString *tempScriptHolder = [NSString stringWithFormat:@"if ( document.cookie.split('%@').length < 2 ) { document.cookie = '", cookie.name];
+            tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"%@=%@;",cookie.name,cookie.value]];
+            if ( cookie.expiresDate ) {
+                tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"expires=%@;", [cookie.expiresDate description]]];
+            }
+            if ( cookie.path ) {
+                tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"path=%@;", cookie.path]];
+            }
+            if ( cookie.domain ) {
+                tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"domain=%@;", cookie.domain]];
+            }
+            if ( cookie.isSecure ) {
+                tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"secure;"]];
+            }
+            cookieScriptString  = [[cookieScriptString stringByAppendingString:tempScriptHolder] stringByAppendingString:@"'; }\n"];
+        }
+    }
+    
+    return [[WKUserScript alloc] initWithSource:cookieScriptString
+                                  injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                               forMainFrameOnly:NO];
+}
+
 - (NSString *)backingFramework
 {
     return @"WebKit";
+}
+
+#pragma mark Getters/Setters
+
+- (NSURLRequest *)request
+{
+    // Mimicking UIWebView behavior
+    if ( ![_request.URL isEqual:self.backingView.URL] ) {
+        _request = [_request mutableCopy];
+        [(NSMutableURLRequest*)_request setURL:self.backingView.URL];
+        [(NSMutableURLRequest*)_request setMainDocumentURL:self.backingView.URL];
+    }
+    return _request;
 }
 
 #pragma mark UIWebView pass-through
 
 - (void)loadRequest:(NSURLRequest *)request
 {
+    _request = request;
     [self.backingView loadRequest:request];
 }
 
@@ -325,6 +379,7 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation
 {
     // There is no equivalent degraded delegate method.
+    NSLog(@"Server redirect.");
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
@@ -367,6 +422,7 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
+    NSLog(@"Received authentication challenge.");
     // There is no equivalent degraded delegate method.
 }
 

@@ -38,6 +38,7 @@
 @implementation RZPUIWebView
 
 @synthesize delegate = _delegate;
+@synthesize request = _request;
 
 - (id)initWebViewHostWithDelegate:(id <RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options
 {
@@ -84,6 +85,10 @@
                                                                             constant:0];
         
         [self addConstraints:@[topConstraint, leftConstraint, bottomConstraint, rightConstraint]];
+        
+        // Setting properties to mimic default WKWebView behavior
+        _backingView.dataDetectorTypes = UIDataDetectorTypeAll;
+        _backingView.scalesPageToFit = YES;
     }
     
     return self;
@@ -94,10 +99,18 @@
     return @"UIKit";
 }
 
+#pragma mark Getters/Setters
+
+- (NSURLRequest *)request
+{
+    return self.backingView.request ? self.backingView.request : _request;
+}
+
 #pragma mark UIWebView pass-through
 
 - (void)loadRequest:(NSURLRequest *)request
 {
+    _request = request;
     [self.backingView loadRequest:request];
 }
 
