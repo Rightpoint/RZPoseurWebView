@@ -1,8 +1,8 @@
 //
-//  RZPWKWebView.h
+//  WKProcessPool+RZExtensions.m
 //  RZPoseurWebView
 //
-//  Created by Justin Kaufman on 11/17/14.
+//  Created by Spencer Poff on 12/10/14.
 //
 //  Copyright 2014 Raizlabs and other contributors
 //  http://raizlabs.com/
@@ -26,10 +26,18 @@
 //  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#import "RZPoseurWebView.h"
+#import "WKProcessPool+RZExtensions.h"
 
-@interface RZPWKWebView : RZPoseurWebView
+@implementation WKProcessPool (RZExtensions)
 
-- (id)initWebViewHostWithDelegate:(id <RZPoseurWebViewDelegate>)delegate configuration:(WKWebViewConfiguration *)configuration options:(NSDictionary *)options;
++ (WKProcessPool*)rz_sharedProcessPool
+{
+    static WKProcessPool *_sharedPool = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedPool = [[WKProcessPool alloc] init];
+    });
+    return _sharedPool;
+}
 
 @end

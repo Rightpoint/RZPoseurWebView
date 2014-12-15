@@ -26,6 +26,7 @@
 //  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 @class RZPoseurWebView;
 
@@ -59,6 +60,7 @@ typedef NS_ENUM(NSUInteger, RZPoseurWebViewNavigationType) {
 @interface RZPoseurWebView : UIView
 
 @property (assign, nonatomic) id<RZPoseurWebViewDelegate> delegate;
+@property (strong, nonatomic, readonly) NSURLRequest *request;
 
 - (id)initWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options;
 

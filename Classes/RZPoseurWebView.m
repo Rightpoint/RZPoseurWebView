@@ -38,6 +38,8 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 
 @interface RZPoseurWebView ()
 
+@property (strong, nonatomic, readwrite) NSURLRequest *request;
+
 @end
 
 @implementation RZPoseurWebView
@@ -58,6 +60,12 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 }
 
 - (id)initWebViewHostWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options
+{
+    RZPoseurWebViewMethodUnimplementedAssert();
+    return nil;
+}
+
+- (NSURLRequest *)request
 {
     RZPoseurWebViewMethodUnimplementedAssert();
     return nil;
