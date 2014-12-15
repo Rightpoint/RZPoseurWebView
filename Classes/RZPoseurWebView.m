@@ -38,7 +38,7 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 
 @interface RZPoseurWebView ()
 
-@property (readwrite, nonatomic, retain) NSURLRequest *request;
+@property (strong, nonatomic, readwrite) NSURLRequest *request;
 
 @end
 

@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
     // Add cookies from shared cookie storage via javascript injection. Since we have no way of knowing what cookies are being stored
     // in the WKProcessPool, we are not adding the cookies to the page if they already exist.
     NSString *cookieScriptString = @"";
-    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+    for ( NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies] ) {
         if ( cookie.name && cookie.value ) {
             NSString *tempScriptHolder = [NSString stringWithFormat:@"if ( document.cookie.split('%@').length < 2 ) { document.cookie = '", cookie.name];
             tempScriptHolder = [tempScriptHolder stringByAppendingString:[NSString stringWithFormat:@"%@=%@;",cookie.name,cookie.value]];
@@ -179,11 +179,12 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 
 - (NSURLRequest *)request
 {
-    // Mimicking UIWebView behavior
+    // Mimicking UIWebView behavior.
     if ( ![_request.URL isEqual:self.backingView.URL] ) {
         _request = [_request mutableCopy];
         [(NSMutableURLRequest*)_request setURL:self.backingView.URL];
         [(NSMutableURLRequest*)_request setMainDocumentURL:self.backingView.URL];
+        _request = [_request copy];
     }
     return _request;
 }
@@ -379,7 +380,6 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation
 {
     // There is no equivalent degraded delegate method.
-    NSLog(@"Server redirect.");
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
@@ -422,7 +422,6 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-    NSLog(@"Received authentication challenge.");
     // There is no equivalent degraded delegate method.
 }
 

@@ -60,7 +60,7 @@ typedef NS_ENUM(NSUInteger, RZPoseurWebViewNavigationType) {
 @interface RZPoseurWebView : UIView
 
 @property (assign, nonatomic) id<RZPoseurWebViewDelegate> delegate;
-@property (readonly, nonatomic, retain) NSURLRequest *request;
+@property (strong, nonatomic, readonly) NSURLRequest *request;
 
 - (id)initWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options;
 
