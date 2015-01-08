@@ -71,6 +71,12 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
     return nil;
 }
 
+- (UIScrollView *)scrollView
+{
+    RZPoseurWebViewMethodUnimplementedAssert();
+    return nil;
+}
+
 - (NSString *)backingFramework
 {
     RZPoseurWebViewMethodUnimplementedAssert();

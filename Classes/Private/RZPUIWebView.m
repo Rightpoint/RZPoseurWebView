@@ -106,6 +106,18 @@
     return self.backingView.request ? self.backingView.request : _request;
 }
 
+- (UIScrollView *)scrollView
+{
+    if ( self.backingView )
+    {
+        return self.backingView.scrollView;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
 #pragma mark UIWebView pass-through
 
 - (void)loadRequest:(NSURLRequest *)request

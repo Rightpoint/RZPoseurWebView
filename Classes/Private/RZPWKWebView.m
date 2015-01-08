@@ -189,6 +189,18 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
     return _request;
 }
 
+- (UIScrollView *)scrollView
+{
+    if ( self.backingView )
+    {
+        return self.backingView.scrollView;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
 #pragma mark UIWebView pass-through
 
 - (void)loadRequest:(NSURLRequest *)request
