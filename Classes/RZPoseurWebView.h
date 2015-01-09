@@ -61,6 +61,7 @@ typedef NS_ENUM(NSUInteger, RZPoseurWebViewNavigationType) {
 
 @property (assign, nonatomic) id<RZPoseurWebViewDelegate> delegate;
 @property (strong, nonatomic, readonly) NSURLRequest *request;
+@property (weak, nonatomic, readonly) UIScrollView *scrollView;
 
 - (id)initWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options;
 
