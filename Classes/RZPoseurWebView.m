@@ -30,6 +30,7 @@
 #import <WebKit/WebKit.h>
 #import "RZPUIWebView.h"
 #import "RZPWKWebView.h"
+#import "RZPoseurWebView_Private.h"
 
 NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipeNavigationGestures";
 
@@ -39,7 +40,7 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 @interface RZPoseurWebView ()
 
 @property (strong, nonatomic, readwrite) NSURLRequest *request;
-
+@property (strong, nonatomic) RZPoseurWebView *instance;
 @end
 
 @implementation RZPoseurWebView
@@ -54,9 +55,9 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
         class = [RZPUIWebView class];
     }
 
-    RZPoseurWebView *instance = [[class alloc] initWebViewHostWithDelegate:delegate options:options];
+    _instance = [[class alloc] initWebViewHostWithDelegate:delegate options:options];
     
-    return instance;
+    return _instance;
 }
 
 - (id)initWebViewHostWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options
@@ -126,5 +127,23 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
     return NO;
 }
 
+#pragma mark - Private Properties
+
+/**
+ * WKWebView will be exposed as a property if it is the class that is used to create
+ * an instance of poseur web view.  User needs to import private header to use it.
+ */
+- (WKWebView *)backingWebView
+{
+    if ( [WKWebView class] )
+    {
+        RZPWKWebView *wkWebView = (RZPWKWebView *)self.instance;
+        return wkWebView.backingWebView;
+    }
+    else
+    {
+        return nil;
+    }
+}
 
 @end

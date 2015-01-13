@@ -175,6 +175,11 @@ typedef NS_ENUM(NSUInteger, RZPWKWebViewOpenNewWindowBehavior) {
     return @"WebKit";
 }
 
+- (WKWebView *)backingWebView
+{
+    return self.backingView;
+}
+
 #pragma mark Getters/Setters
 
 - (NSURLRequest *)request
