@@ -30,6 +30,7 @@
 #import <WebKit/WebKit.h>
 #import "RZPUIWebView.h"
 #import "RZPWKWebView.h"
+#import "RZPoseurWebView_Private.h"
 
 NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipeNavigationGestures";
 
@@ -126,5 +127,18 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
     return NO;
 }
 
+#pragma mark - Private Properties
+
+/**
+ * Backing web view, UIWebView or WKWebView, will be exposed as a property.  This property
+ * is only available if the private header is imported in the implementation file.  The 
+ * caller should use isKindOfClass introspection so that it can cast the backing web view
+ * to the appropriate class.
+ */
+- (id)backingWebView
+{
+    RZPoseurWebViewMethodUnimplementedAssert();
+    return nil;
+}
 
 @end
