@@ -40,7 +40,7 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 @interface RZPoseurWebView ()
 
 @property (strong, nonatomic, readwrite) NSURLRequest *request;
-@property (strong, nonatomic) RZPoseurWebView *instance;
+
 @end
 
 @implementation RZPoseurWebView
@@ -55,9 +55,9 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
         class = [RZPUIWebView class];
     }
 
-    _instance = [[class alloc] initWebViewHostWithDelegate:delegate options:options];
+    RZPoseurWebView *instance = [[class alloc] initWebViewHostWithDelegate:delegate options:options];
     
-    return _instance;
+    return instance;
 }
 
 - (id)initWebViewHostWithDelegate:(id<RZPoseurWebViewDelegate>)delegate options:(NSDictionary *)options
@@ -132,12 +132,13 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 /**
  * Backing web view, UIWebView or WKWebView, will be exposed as a property.  This property
  * is only available if the private header is imported in the implementation file.  The 
- * called should use isKindOfClass introspection so that it can cast the backing web view
- * to appropriate to class.
+ * caller should use isKindOfClass introspection so that it can cast the backing web view
+ * to the appropriate class.
  */
 - (id)backingWebView
 {
-    return self.instance.backingWebView;
+    RZPoseurWebViewMethodUnimplementedAssert();
+    return nil;
 }
 
 @end

@@ -33,6 +33,6 @@
 
 @interface RZPoseurWebView ()
 
-@property (nonatomic, strong) id backingWebView;
+@property (nonatomic, strong, readonly) id backingWebView;
 
 @end
