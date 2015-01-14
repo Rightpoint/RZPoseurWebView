@@ -99,6 +99,11 @@
     return @"UIKit";
 }
 
+- (id)backingWebView
+{
+    return self.backingView;
+}
+
 #pragma mark Getters/Setters
 
 - (NSURLRequest *)request

@@ -31,10 +31,8 @@
                  NSStringFromSelector(delegateSelector), \
                  NSStringFromSelector(_cmd));
 
-@class WKWebView;
-
 @interface RZPoseurWebView ()
 
-@property (nonatomic, strong) WKWebView *backingWebView;
+@property (nonatomic, strong) id backingWebView;
 
 @end

@@ -130,20 +130,14 @@ NSString * const RZPoseurWebViewEnableSwipeNavigationGesturesKey = @"EnableSwipe
 #pragma mark - Private Properties
 
 /**
- * WKWebView will be exposed as a property if it is the class that is used to create
- * an instance of poseur web view.  User needs to import private header to use it.
+ * Backing web view, UIWebView or WKWebView, will be exposed as a property.  This property
+ * is only available if the private header is imported in the implementation file.  The 
+ * called should use isKindOfClass introspection so that it can cast the backing web view
+ * to appropriate to class.
  */
-- (WKWebView *)backingWebView
+- (id)backingWebView
 {
-    if ( [WKWebView class] )
-    {
-        RZPWKWebView *wkWebView = (RZPWKWebView *)self.instance;
-        return wkWebView.backingWebView;
-    }
-    else
-    {
-        return nil;
-    }
+    return self.instance.backingWebView;
 }
 
 @end
