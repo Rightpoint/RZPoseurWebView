@@ -1,3 +1,5 @@
+NOTE: This library is no longer actively maintained.
+
 RZPoseurWebView
 ===============
 
